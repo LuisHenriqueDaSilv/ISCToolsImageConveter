@@ -2,7 +2,7 @@
 file: bmp2oac3.c
 uso: bmp2oac3 file.bmp
 Exemplo: bmp2oac3 display.bmp
-Converte imagem display.bmp em arquivo display.mif para carregar na memória 
+Converte imagem display.bmp em arquivo display.mif para carregar na memï¿½ria 
 do FPGA e display.data e display.bin para o Rars
 Marcus Vinicius Lamar - 05/09/2021
 2021-1
@@ -15,7 +15,7 @@ Versao que gera MIF em palavras de 32 bits
 #include <float.h>
 #include <string.h>
 
-static unsigned char *texels;  // Sempre ensinamos a vocês a não usar variáveis globais...
+static unsigned char *texels;  // Sempre ensinamos a vocï¿½s a nï¿½o usar variï¿½veis globais...
 static int width, height;
 
 void readBmp(char *filename)
@@ -121,7 +121,23 @@ int main(int argc, char** argv)
     
     fprintf(aoutmif,"DEPTH = %d;\nWIDTH = 32;\nADDRESS_RADIX = HEX;\nDATA_RADIX = HEX;\nCONTENT\nBEGIN\n",(width>>2)*height);
 
-    fprintf(aouts,"%s: .word %d, %d\n.byte ",nome, width, height);
+    char formated_nome[256];
+
+    char *base = strrchr(argv[1], '/');
+    if (base != NULL) {
+        base++; // avanÃ§a para depois da '/'
+    } else {
+        base = argv[1]; // nÃ£o tem '/', usa a string toda
+    }
+
+    strncpy(formated_nome, base, sizeof(formated_nome) - 1);
+    formated_nome[sizeof(formated_nome) - 1] = '\0';
+
+    char *dot = strrchr(formated_nome, '.');
+    if (dot != NULL) {
+        *dot = '\0';  // remove a extensÃ£o
+    }
+    fprintf(aouts,"%s: .word %d, %d\n.byte ",formated_nome, width, height);
     
     int cont=0;
     unsigned int hexi;
